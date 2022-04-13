@@ -13,35 +13,32 @@ import java.time.temporal.ChronoUnit;
 public final class Notifier extends JavaPlugin{
     private static Notifier instance;
     public LocalTime shutDownTime = LocalTime.of( 5, 30);
-    //public LocalTime shutDownTimeHourBefore = LocalTime.of(shutDownTime.getHour() -1, shutDownTime.getMinute());
     public LocalTime minutePrior = LocalTime.of(shutDownTime.getHour(),shutDownTime.getMinute()-1);
     boolean hourNotified = false;
     boolean minuteNotified = false;
     public boolean disabled = false;
 
-    public static Notifier getInstance() {
-        return instance;
-    }
+    public static Notifier getInstance() {return instance;}
 
     private void kickAllPlayers(){
         for (Player target : Bukkit.getServer().getOnlinePlayers()) {
-                target.kickPlayer("Server Shut Down\n§4Th§eank §ayou §1for §dplay§5ing!\n§6ありがとう！");
+                target.kickPlayer("Server Shut Down\n§4Th§eank §ayou §1for §dplay§5ing!\n§6ありがとう！"); //Server Shut Down Thank you for playing! ありがとう
         }
     }
 
-    public void toggleStatus(){
-        disabled = !disabled;
-    }
-
+    public void toggleStatus(){disabled = !disabled;}
 
     public void onEnable() {
         instance = this;
         this.getCommand("Ntoggle").setExecutor(new CommandToggle());
         BukkitScheduler scheduler = getServer().getScheduler();
+
         scheduler.scheduleSyncRepeatingTask(this, () -> {
             if(disabled){return;}
+
             LocalTime currentTime = LocalTime.now();
             long timeDifference = currentTime.until(shutDownTime, ChronoUnit.MINUTES);
+
             //Hour Warning
             if(timeDifference == 59 && !hourNotified){
                 getServer().broadcastMessage("§a1 Hour until server shutdown");
