@@ -1,0 +1,11 @@
+name: Notifier
+version: '${project.version}'
+main: notifier.notifier.Notifier
+api-version: 1.18
+description: Notifies players at any time you want
+
+commands:
+  Ntoggle:
+    description: toggle whether this runs or not.
+    usage: /Ntoggle
+    permission: Notifier.toggle
