@@ -1,23 +1,22 @@
 package notifier.notifier;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public final class Notifier extends JavaPlugin{
     private static Notifier instance;
-    public LocalTime shutDownTime = LocalTime.of( 5, 30);
+    public LocalTime shutDownTime = LocalTime.of( 5, 30); //UTC to 11:30 MDT
     public LocalTime minutePrior = LocalTime.of(shutDownTime.getHour(),shutDownTime.getMinute()-1);
     boolean hourNotified = false;
     boolean minuteNotified = false;
     public boolean disabled = false;
 
+    //Allows var check from CommandToggle.java
     public static Notifier getInstance() {return instance;}
 
     private void kickAllPlayers(){
@@ -50,10 +49,11 @@ public final class Notifier extends JavaPlugin{
                 minuteNotified = true;
             }
             //Final warning
-            if(currentTime.getHour() == minutePrior.getHour() && currentTime.getMinute() == minutePrior.getMinute() && currentTime.getSecond() >=50){
+            if(currentTime.getHour() == shutDownTime.getHour() && currentTime.getMinute() == minutePrior.getMinute() && currentTime.getSecond() >=49){
                 getServer().broadcastMessage("§l§cSHUTDOWN IN " + currentTime.until(shutDownTime, ChronoUnit.SECONDS));
             }
-            if(currentTime.getHour() == shutDownTime.getHour() && currentTime.getMinute() == shutDownTime.getMinute()){
+            //We want to kick one second before the shutdown time due to how "Thank you for playing, server shutdown" looks better than "disconnected".
+            if(currentTime.getHour() == shutDownTime.getHour() && currentTime.getMinute() == minutePrior.getMinute() && currentTime.getSecond() == 59){
                 kickAllPlayers();
             }
         }, 0L, 20L);
